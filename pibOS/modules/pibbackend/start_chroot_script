@@ -1,0 +1,57 @@
+#!/usr/bin/env bash
+# <Script Name>
+# <Description what this module does>
+# Written by <Author>
+# GPL V3
+########
+
+
+# Source error handling, leave this in place
+set -x
+set -e
+
+source /common.sh
+install_cleanup_trap
+
+unpack /filesystem/home/pi /home/"${BASE_USER}" "${BASE_USER}"
+unpack /filesystem/home/root /root root
+unpack /filesystem/boot /boot
+
+echo "This is an example module, install and set up what you need here!"
+echo "$PIBBACKEND_VAR"
+
+apt-get update
+check_install_pkgs ${PIBBACKEND_PKGS}
+
+apt-get remove --yes "aisleriot" "gnome-sudoku" "ace-of-penguins" "gbrainy" "gnome-mines" "gnome-mahjongg" "libreoffice*" "thunderbird*"
+
+echo 'Install doitpi ansible and test environment'
+BASE_USER_HOME=/home/${BASE_USER}
+BASE_USER_WORKSPACE=${BASE_USER_HOME}/workspace
+# Für ansible-playbook default locale vorgeben
+export LC_ALL=C.UTF-8
+
+cd ${BASE_USER_WORKSPACE}
+  gitclone PIBBACKEND_ANSIBLE_REPO
+  chown --recursive "${BASE_USER}": ${BASE_USER_HOME}
+  cd ./doitpi-ansible
+  # HOME für pyenv Rolle setzen
+  HOME=${BASE_USER_HOME} ansible-playbook --extra-vars "ansible_user_id=${BASE_USER} ansible_user_dir=${BASE_USER_HOME}" --tags ${PIBBACKEND_ANSIBLE_REPO_TAGS} --limit lokal main.yaml
+
+chown --recursive ${BASE_USER}: ${BASE_USER_HOME}
+
+cd ${BASE_USER_WORKSPACE}
+  gitclone PIBBACKEND_TEST_REPO
+  chown --recursive "${BASE_USER}": ./doitpi-test
+  #cd ./doitpi-test
+  #su --command "direnv allow ." "${BASE_USER}"
+  #su --command "direnv exec ${BASE_USER_WORKSPACE}/doitpi-test pip install -r requirements.txt" "${BASE_USER}"
+  #su --command "direnv exec ${BASE_USER_WORKSPACE}/doitpi-test pytest ${BASE_USER_WORKSPACE}/doitpi-test/test_chroot.py" "${BASE_USER}"
+
+cd /home/"${BASE_USER}"
+wget https://raw.githubusercontent.com/pib-rocks/pib-backend/main/setup/setup-pib.sh
+chown "${BASE_USER}": setup-pib.sh
+su --login --command "bash -x setup-pib.sh" "${BASE_USER}"
+
+# Unpack root at the end, so files are modified before
+unpack /filesystem/root /
