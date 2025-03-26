@@ -34,7 +34,7 @@ then
 fi
 # Für ansible-playbook default locale vorgeben
 export LC_ALL=C.UTF-8
-
+chown --recursive ${BASE_USER}: ${BASE_USER_HOME}
 cd ${BASE_USER_WORKSPACE}
   gitclone PIBBACKEND_ANSIBLE_REPO
   chown --recursive "${BASE_USER}": ${BASE_USER_HOME}
