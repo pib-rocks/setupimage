@@ -28,6 +28,10 @@ apt-get remove --yes "aisleriot" "gnome-sudoku" "ace-of-penguins" "gbrainy" "gno
 echo 'Install doitpi ansible and test environment'
 BASE_USER_HOME=/home/${BASE_USER}
 BASE_USER_WORKSPACE=${BASE_USER_HOME}/workspace
+if [ ! -d ${BASE_USER_WORKSPACE} ]
+then
+  mkdir --parents ${BASE_USER_WORKSPACE}
+fi
 # Für ansible-playbook default locale vorgeben
 export LC_ALL=C.UTF-8
 
