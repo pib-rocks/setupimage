@@ -1,0 +1,59 @@
+name: Build Pib image on RaspianOS
+on:
+  push:
+
+jobs:
+  build:
+   runs-on: ubuntu-latest
+   steps:
+      # Prepare Build
+      - name: Install Dependencies remove not needed directories
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes coreutils p7zip-full qemu-user-static pv time python3-git python3-yaml jq
+
+      - name: Checkout CustomPiOS
+        uses: actions/checkout@v4
+        with:
+          repository: 'guysoft/CustomPiOS'
+          path: CustomPiOS
+
+      - name: Checkout Project Repository
+        uses: actions/checkout@v4
+        with:
+          path: repository
+          submodules: true
+      
+      - name: Update CustomPiOS Paths
+        run: |
+          cd repository/pibOS
+          ../../CustomPiOS/src/update-custompios-paths
+
+      - name: Load raspianOS as base image
+        run: |
+          cd repository/pibOS/image
+          wget --continue --quiet --trust-server-names 'https://downloads.raspberrypi.com/raspios_arm64/images/raspios_arm64-2024-11-19/2024-11-19-raspios-bookworm-arm64.img.xz'
+
+      - name: Build pibOS
+        run: |
+          sudo modprobe loop
+          cd repository/pibOS
+          sudo bash ./build_dist
+        
+      - name: Create pibOS image
+        id: get_arm64_info
+        run: |
+          source repository/pibOS/config
+          IMAGE=pibOS-$(date +%y.%m.%d-%H.%M)
+          sudo mv repository/pibOS/workspace/*.img ${IMAGE}.img
+          pv --progress ${IMAGE}.img | sudo xz --extreme --threads=0 | sudo tee ${IMAGE}.img.xz >/dev/null
+          echo "image=${IMAGE}.img.xz" >> $GITHUB_OUTPUT
+
+      - name: Uploading pibOS image as artifact
+        uses: actions/upload-artifact@v4
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          path: ${{ steps.get_arm64_info.outputs.image }}
+          name: ${{ steps.get_arm64_info.outputs.image }}
+
