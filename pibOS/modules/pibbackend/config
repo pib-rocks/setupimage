@@ -5,12 +5,3 @@ export BASE_ARCH="arm64"
 
 PIBBACKEND_PKGS="git curl vim screen ansible tree yamllint \
                 nmap net-tools build-essential cmake"
-
-PIBBACKEND_TEST_REPO_SHIP="https://github.com/kraeml/doitpi-test.git"
-PIBBACKEND_TEST_REPO_BUILD=
-PIBBACKEND_TEST_REPO_BRANCH=main
-
-PIBBACKEND_ANSIBLE_REPO_SHIP="https://codeberg.org/kraeml/doitpi-ansible.git"
-PIBBACKEND_ANSIBLE_REPO_BUILD=
-PIBBACKEND_ANSIBLE_REPO_BRANCH=master
-PIBBACKEND_ANSIBLE_REPO_TAGS="mybase"

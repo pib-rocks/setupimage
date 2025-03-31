@@ -25,25 +25,6 @@ check_install_pkgs ${PIBBACKEND_PKGS}
 
 apt-get remove --yes "aisleriot" "gnome-sudoku" "ace-of-penguins" "gbrainy" "gnome-mines" "gnome-mahjongg" "libreoffice*" "thunderbird*"
 
-echo 'Install doitpi ansible and test environment'
-BASE_USER_HOME=/home/${BASE_USER}
-BASE_USER_WORKSPACE=${BASE_USER_HOME}/workspace
-if [ ! -d ${BASE_USER_WORKSPACE} ]
-then
-  mkdir --parents ${BASE_USER_WORKSPACE}
-fi
-# Für ansible-playbook default locale vorgeben
-export LC_ALL=C.UTF-8
-chown --recursive ${BASE_USER}: ${BASE_USER_HOME}
-cd ${BASE_USER_WORKSPACE}
-  gitclone PIBBACKEND_ANSIBLE_REPO
-  chown --recursive "${BASE_USER}": ${BASE_USER_HOME}
-  cd ./doitpi-ansible
-  # HOME für pyenv Rolle setzen
-  HOME=${BASE_USER_HOME} ansible-playbook --extra-vars "ansible_user_id=${BASE_USER} ansible_user_dir=${BASE_USER_HOME}" --tags ${PIBBACKEND_ANSIBLE_REPO_TAGS} --limit lokal main.yaml
-
-chown --recursive ${BASE_USER}: ${BASE_USER_HOME}
-
 cd ${BASE_USER_WORKSPACE}
   gitclone PIBBACKEND_TEST_REPO
   chown --recursive "${BASE_USER}": ./doitpi-test
