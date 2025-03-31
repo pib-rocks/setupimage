@@ -25,14 +25,6 @@ check_install_pkgs ${PIBBACKEND_PKGS}
 
 apt-get remove --yes "aisleriot" "gnome-sudoku" "ace-of-penguins" "gbrainy" "gnome-mines" "gnome-mahjongg" "libreoffice*" "thunderbird*"
 
-cd ${BASE_USER_WORKSPACE}
-  gitclone PIBBACKEND_TEST_REPO
-  chown --recursive "${BASE_USER}": ./doitpi-test
-  #cd ./doitpi-test
-  #su --command "direnv allow ." "${BASE_USER}"
-  #su --command "direnv exec ${BASE_USER_WORKSPACE}/doitpi-test pip install -r requirements.txt" "${BASE_USER}"
-  #su --command "direnv exec ${BASE_USER_WORKSPACE}/doitpi-test pytest ${BASE_USER_WORKSPACE}/doitpi-test/test_chroot.py" "${BASE_USER}"
-
 cd /home/"${BASE_USER}"
 wget https://raw.githubusercontent.com/pib-rocks/pib-backend/main/setup/setup-pib.sh
 chown "${BASE_USER}": setup-pib.sh
