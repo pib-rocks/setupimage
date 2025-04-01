@@ -4,7 +4,7 @@ on:
     branches:
       - develop # Trigger for the develop branch
       - master  # Trigger for the master branch
-      - '*release*'  # Trigger for branches containing 'release' in the name
+      - 'release/*'  # Trigger for branches containing 'release' in the name
     tags:
       - 'v*.*.*'     # Trigger for version tags (e.g., v1.0.0)
 
@@ -77,7 +77,7 @@ jobs:
           files: ${{ steps.get_arm64_info.outputs.image }}
 
       - name: Create Release
-        if: github.ref == 'refs/heads/master' && startsWith(github.ref, 'refs/tags/v')
+        if: startsWith(github.ref, 'refs/tags/v')
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
