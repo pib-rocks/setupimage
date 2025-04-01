@@ -1,6 +1,12 @@
 name: Build Pib image on RaspianOS
 on:
   push:
+    branches:
+      - develop # Trigger for the develop branch
+      - master  # Trigger for the master branch
+      - '*release*'  # Trigger for branches containing 'release' in the name
+    tags:
+      - 'v*.*.*'     # Trigger for version tags (e.g., v1.0.0)
 
 jobs:
   build:
@@ -55,3 +61,31 @@ jobs:
         with:
           path: ${{ steps.get_arm64_info.outputs.image }}
           name: ${{ steps.get_arm64_info.outputs.image }}
+
+      - name: Create Pre-Release
+        if: contains(github.ref, 'release')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: pre-${{ github.ref_name }}-$(date +%y.%m.%d-%H.%M)
+          release_name: Pre-Release ${{ github.ref_name }} from $(date +%y.%m.%d-%H.%M)
+          draft: false
+          prerelease: true
+          body: |
+            This is a pre-release for ${{ github.ref_name }}.
+          files: ${{ steps.get_arm64_info.outputs.image }}
+
+      - name: Create Release
+        if: github.ref == 'refs/heads/master' && startsWith(github.ref, 'refs/tags/v')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+          body: |
+            This is a release for ${{ github.ref }}.
+          files: ${{ steps.get_arm64_info.outputs.image }}
