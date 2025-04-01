@@ -46,7 +46,7 @@ jobs:
           IMAGE=pibOS-$(date +%y.%m.%d-%H.%M)
           sudo mv repository/pibOS/workspace/*.img ${IMAGE}.img
           pv --progress ${IMAGE}.img | sudo xz --extreme --threads=0 | sudo tee ${IMAGE}.img.xz >/dev/null
-          echo "image=\${IMAGE}.img.xz" >> \$GITHUB_OUTPUT
+          echo "image=${IMAGE}.img.xz" >> $GITHUB_OUTPUT
 
       - name: Uploads the created pibOS image as an artifact.
         uses: actions/upload-artifact@v4
