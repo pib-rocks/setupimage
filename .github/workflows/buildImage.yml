@@ -49,4 +49,9 @@ jobs:
           echo "image=\${IMAGE}.img.xz" >> \$GITHUB_OUTPUT
 
       - name: Uploads the created pibOS image as an artifact.
-        uses: actions/upload-artifact
+        uses: actions/upload-artifact@v4
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          path: ${{ steps.get_arm64_info.outputs.image }}
+          name: ${{ steps.get_arm64_info.outputs.image }}
