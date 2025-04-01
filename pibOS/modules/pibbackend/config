@@ -1,0 +1,7 @@
+PIBBACKEND_VAR="This is a module variable"
+export BASE_ARCH="arm64"
+# Not working
+# BASE_USER="pib"
+
+PIBBACKEND_PKGS="git curl vim screen ansible tree yamllint \
+                nmap net-tools build-essential cmake"

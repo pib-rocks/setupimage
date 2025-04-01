@@ -1,0 +1,91 @@
+name: Build Pib image on RaspianOS
+on:
+  push:
+    branches:
+      - develop # Trigger for the develop branch
+      - master  # Trigger for the master branch
+      - '*release*'  # Trigger for branches containing 'release' in the name
+    tags:
+      - 'v*.*.*'     # Trigger for version tags (e.g., v1.0.0)
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Updates the package directory and installs necessary dependencies.
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes coreutils p7zip-full qemu-user-static pv time python3-git python3-yaml jq
+
+      - name: Clones the CustomPiOS repository into the path 'CustomPiOS'.
+        uses: actions/checkout@v4
+        with:
+          repository: 'guysoft/CustomPiOS'
+          path: CustomPiOS
+
+      - name: Clones the main project repository into the path 'repository' and loads all submodules.
+        uses: actions/checkout@v4
+        with:
+          path: repository
+          submodules: true
+
+      - name: Updates paths in CustomPiOS based on the project repository.
+        run: |
+          cd repository/pibOS
+          ../../CustomPiOS/src/update-custompios-paths
+
+      - name: Downloads the Raspberry Pi OS image (Raspbian) as the base image.
+        run: |
+          cd repository/pibOS/image
+          wget --continue --quiet --trust-server-names 'https://downloads.raspberrypi.com/raspios_arm64/images/raspios_arm64-2024-11-19/2024-11-19-raspios-bookworm-arm64.img.xz'
+
+      - name: Builds the custom pibOS image.
+        run: |
+          sudo modprobe loop
+          cd repository/pibOS
+          sudo bash ./build_dist
+
+      - name: Creates a compressed image of the built pibOS.
+        id: get_arm64_info
+        run: |
+          source repository/pibOS/config
+          IMAGE=pibOS-$(date +%y.%m.%d-%H.%M)
+          sudo mv repository/pibOS/workspace/*.img ${IMAGE}.img
+          pv --progress ${IMAGE}.img | sudo xz --extreme --threads=0 | sudo tee ${IMAGE}.img.xz >/dev/null
+          echo "image=${IMAGE}.img.xz" >> $GITHUB_OUTPUT
+
+      - name: Uploads the created pibOS image as an artifact.
+        uses: actions/upload-artifact@v4
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          path: ${{ steps.get_arm64_info.outputs.image }}
+          name: ${{ steps.get_arm64_info.outputs.image }}
+
+      - name: Create Pre-Release
+        if: contains(github.ref, 'release')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: pre-${{ github.ref_name }}-$(date +%y.%m.%d-%H.%M)
+          release_name: Pre-Release ${{ github.ref_name }} from $(date +%y.%m.%d-%H.%M)
+          draft: false
+          prerelease: true
+          body: |
+            This is a pre-release for ${{ github.ref_name }}.
+          files: ${{ steps.get_arm64_info.outputs.image }}
+
+      - name: Create Release
+        if: github.ref == 'refs/heads/master' && startsWith(github.ref, 'refs/tags/v')
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+          body: |
+            This is a release for ${{ github.ref }}.
+          files: ${{ steps.get_arm64_info.outputs.image }}

@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+# <Script Name>
+# <Description what this module does>
+# Written by <Author>
+# GPL V3
+########
+
+
+# Source error handling, leave this in place
+set -x
+set -e
+
+source /common.sh
+install_cleanup_trap
+
+unpack /filesystem/home/pi /home/"${BASE_USER}" "${BASE_USER}"
+unpack /filesystem/home/root /root root
+unpack /filesystem/boot /boot
+
+echo "This is an example module, install and set up what you need here!"
+echo "$PIBBACKEND_VAR"
+
+apt-get update
+check_install_pkgs ${PIBBACKEND_PKGS}
+
+apt-get remove --yes "aisleriot" "gnome-sudoku" "ace-of-penguins" "gbrainy" "gnome-mines" "gnome-mahjongg" "libreoffice*" "thunderbird*"
+
+cd /home/"${BASE_USER}"
+wget https://raw.githubusercontent.com/pib-rocks/pib-backend/main/setup/setup-pib.sh
+chown "${BASE_USER}": setup-pib.sh
+su --login --command "bash -x setup-pib.sh" "${BASE_USER}"
+
+# Unpack root at the end, so files are modified before
+unpack /filesystem/root /

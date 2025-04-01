@@ -1,0 +1,15 @@
+[Unit]
+Description=code-server
+After=network.target
+
+[Service]
+Type=simple
+PIDFile=/run/codeserver.pid
+ExecStart=/bin/bash -c "/usr/bin/code-server --disable-telemetry"
+User=1000
+Group=1000
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
