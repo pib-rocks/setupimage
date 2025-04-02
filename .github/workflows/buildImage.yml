@@ -73,7 +73,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tag_name: pre-${{ github.ref_name }}-${{ steps.date.outputs.date }}
-          release_name: Pre-Release ${{ github.ref_name }} from ${{ steps.date.outputs.date }}
+          name: Pre-Release ${{ github.ref_name }} from ${{ steps.date.outputs.date }}
           draft: false
           prerelease: true
           body: |
