@@ -62,14 +62,18 @@ jobs:
           path: ${{ steps.get_arm64_info.outputs.image }}
           name: ${{ steps.get_arm64_info.outputs.image }}
 
+      - name: Get current date
+        id: date
+        run: echo "date=$(date +'%y.%m.%d-%H.%M')" >> $GITHUB_OUTPUT
+
       - name: Create Pre-Release
         if: contains(github.ref, 'release')
         uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: pre-${{ github.ref_name }}-$(date +%y.%m.%d-%H.%M)
-          release_name: Pre-Release ${{ github.ref_name }} from $(date +%y.%m.%d-%H.%M)
+          tag_name: pre-${{ github.ref_name }}-${{ steps.date.outputs.date }}
+          release_name: Pre-Release ${{ github.ref_name }} from ${{ steps.date.outputs.date }}
           draft: false
           prerelease: true
           body: |
