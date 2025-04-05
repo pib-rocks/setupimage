@@ -28,10 +28,10 @@ apt-get remove --yes "aisleriot" "gnome-sudoku" "ace-of-penguins" "gbrainy" "gno
 cd /home/"${BASE_USER}"
 wget https://raw.githubusercontent.com/pib-rocks/pib-backend/main/setup/setup-pib.sh
 chown "${BASE_USER}": setup-pib.sh
-# Run twice because docker service not running in QEMU
+# Run setup script twice because docker service not running in QEMU
 su --login --command "bash -x setup-pib.sh" "${BASE_USER}" || true
 su --login --command "bash -x setup-pib.sh" "${BASE_USER}" || true
 
-systemctl enable doitpi_firstboot.service
 # Unpack root at the end, so files are modified before
 unpack /filesystem/root /
+systemctl enable doitpi_firstboot.service
