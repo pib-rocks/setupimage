@@ -5,6 +5,7 @@ on:
       - develop # Trigger for the develop branch
       - master  # Trigger for the master branch
       - 'release/*'  # Trigger for branches containing 'release' in the name
+      - 'feature/*'  # Trigger for branches containing 'feature' in the name
     tags:
       - 'v*.*.*'     # Trigger for version tags (e.g., v1.0.0)
 
