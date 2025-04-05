@@ -5,6 +5,9 @@ sleep 30 # Waiting for prober boot up
 # Variable for the current user's home path
 USER_HOME=$(getent passwd 1000 | cut --delimiter=: --fields=6)
 USER_NAME=$(getent passwd 1000 | cut --delimiter=: --fields=1)
+export APP_DIR="$USER_HOME/app"
+export BACKEND_DIR="$APP_DIR/pib-backend"
+export FRONTEND_DIR="$APP_DIR/cerebra"
 
 # Function to replace the path /home/pi with the current user's home path
 function rm_home_pi {
@@ -69,6 +72,8 @@ chown "${USER_NAME}": setup-pib.sh
 # Switch to the current user and execute the setup-pib.sh script with debug output enabled
 su --login --command "bash -x setup-pib.sh" "${USER_NAME}"
 
+docker compose -f "$BACKEND_DIR/docker-compose.yaml" --profile all up -d || return 1
+docker compose -f "$FRONTEND_DIR/docker-compose.yaml" up -d || return 1
 # Disable the doitpi_firstboot service
 systemctl disable doitpi_firstboot.service
 # Delete the service file for doitpi_firstboot
