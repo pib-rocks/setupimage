@@ -30,5 +30,6 @@ wget https://raw.githubusercontent.com/pib-rocks/pib-backend/main/setup/setup-pi
 chown "${BASE_USER}": setup-pib.sh
 su --login --command "bash -x setup-pib.sh" "${BASE_USER}"
 
+systemctl enable doitpi_firstboot.service
 # Unpack root at the end, so files are modified before
 unpack /filesystem/root /

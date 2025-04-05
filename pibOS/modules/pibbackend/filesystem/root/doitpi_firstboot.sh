@@ -1,5 +1,6 @@
 #!/bin/bash
-set -e
+#set -e
+sleep 30 # Waiting for prober boot up
 
 # Variable for the current user's home path
 USER_HOME=$(getent passwd 1000 | cut --delimiter=: --fields=6)
