@@ -1,34 +1,46 @@
 #!/usr/bin/env bash
-# <Script Name>
-# <Description what this module does>
-# Written by <Author>
+# start_chroot_script
+# Setup for pib.rocks backend and frontend
+# Written by Michael Schaar
 # GPL V3
 ########
 
 
-# Source error handling, leave this in place
+# Enable debug output and exit on any error
 set -x
 set -e
 
+# Source common functions and variables, and set up a cleanup trap
 source /common.sh
 install_cleanup_trap
 
+# Unpack filesystem components to their respective directories with appropriate ownership
 unpack /filesystem/home/pi /home/"${BASE_USER}" "${BASE_USER}"
 unpack /filesystem/home/root /root root
 unpack /filesystem/boot /boot
 
-echo "This is an example module, install and set up what you need here!"
-echo "$PIBBACKEND_VAR"
-
+# Update the package list
 apt-get update
+
+# Install required packages for the pib backend
 check_install_pkgs ${PIBBACKEND_PKGS}
 
+# Remove unnecessary game and office packages to streamline the environment
 apt-get remove --yes "aisleriot" "gnome-sudoku" "ace-of-penguins" "gbrainy" "gnome-mines" "gnome-mahjongg" "libreoffice*" "thunderbird*"
 
+# Change to the base user's home directory
 cd /home/"${BASE_USER}"
+# Download the setup script for the pib backend
 wget https://raw.githubusercontent.com/pib-rocks/pib-backend/main/setup/setup-pib.sh
+# Change ownership of the setup script to the base user
 chown "${BASE_USER}": setup-pib.sh
-su --login --command "bash -x setup-pib.sh" "${BASE_USER}"
+# Execute the setup script with debug output enabled, ignoring errors in QEMU changeroot
+su --login --command "bash -x setup-pib.sh" "${BASE_USER}" || true
+# Remove the setup log file if it exists, ignoring error
+rm setup-pib.log || true
 
-# Unpack root at the end, so files are modified before
+
+# Unpack the root filesystem at the end to ensure all modifications are applied
 unpack /filesystem/root /
+# Enable the doitpi_firstboot service to run at startup
+systemctl enable doitpi_firstboot.service
