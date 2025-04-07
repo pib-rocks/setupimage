@@ -1,6 +1,6 @@
 # pib-rocks/setupimage
 
-Welcome to the “setupimage” repository of pib.rocks! This project provides an automated process for creating images tailored to the pib.rocks robot.
+Welcome to the “setupimage” repository of pib.rocks! This project streamlines the creation of custom Raspberry Pi OS images tailored for the pib.rocks robot, automating the setup process for ease of use.
 
 ## Table of Contents
 
@@ -9,6 +9,7 @@ Welcome to the “setupimage” repository of pib.rocks! This project provides a
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
+  - [Building Locally](#building-locally)
 - [Usage](#usage)
 - [Contributing](#contributing)
 - [License](#license)
@@ -16,59 +17,77 @@ Welcome to the “setupimage” repository of pib.rocks! This project provides a
 
 ## About
 
-The project `setupimage` automatically creates an individual Raspberry Pi OS (pibOS) image. This is done with the help of a Github workflow process. Here, repositories are cloned, dependencies are installed, a base image is downloaded, the pib backend is installed, the image is created and finally uploaded via a GitHub workflow.
+The `setupimage` project automates the creation of a custom Raspberry Pi OS (pibOS) image using a GitHub workflow. This process includes cloning repositories, installing dependencies, downloading a base image, setting up the pib backend, creating the image, and uploading it as a release.
 
 ## Features
 
-**Automated Creation of Raspberry Pi OS Images:**
-- `setupimage` automates the creation process of a Raspberry Pi OS image as a release to simplify the setup process for the user.
+- **Automated Image Creation:**  
+  Automates the creation of a Raspberry Pi OS image, simplifying the setup process for users.
+- **Streamlined Setup:**  
+  Automates the setup process for `pib-backend`, eliminating the need for manual intervention.
+- **CustomPiOS Integration:**  
+  Utilizes [CustomPiOS](https://github.com/guysoft/CustomPiOS) and depends on [pib-backend](https://github.com/pib-rocks/pib-backend) to create a tailored image.
+- **Easy Installation:**  
+  The created image can be flashed onto a microSD card (minimum 32GB) using [rpi-imager](https://github.com/raspberrypi/rpi-imager), with configuration handled directly within the imager.
+- **Automatic Final Installation:**  
+  Completes the installation of `pib-backend` after the first boot, as Docker images require a running system for deployment.
+- **Use Case:**  
+  Facilitates the deployment and configuration of the [pib.rocks](https://pib.rocks/) robot by creating a functional image.
 
-**Simplified Setup Process:**
-- The setup process of `pib-backend` is largely automated, requiring no manual intervention from the user.
-
-**Integration with CustomPiOS:**
-- The project utilizes [CustomPiOS](https://github.com/guysoft/CustomPiOS) and is dependent on [pib-backend](https://github.com/pib-rocks/pib-backend) to create a customized image.
-
-**Easy Installation:**
-- The created image can be flashed onto a microSD card (at least 32GB) using the [rpi-imager](https://github.com/raspberrypi/rpi-imager). Configuration is done directly in the rpi-imager.
-
-**Automatic Final Installation:**
-- The installation process of `pib-backend` is completed after the first boot, as Docker images can only be deployed on a running system.
-
-**Use Case:**
-- `setupimage` creates a functional image for the [pib.rocks](https://pib.rocks/) robot to facilitate its deployment and configuration.
-
-
-## Getting Started 
+## Getting Started
 
 ### Prerequisites
 
-Before you begin, ensure you have the following prerequisites:
+Before you begin, ensure you have the following:
 
-- Download and install rpi-imager: https://www.raspberrypi.com/software/
-- Download latest release from here: https://github.com/pib-rocks/setupimage/releases
-- A microSD card (at least 32GB)
+- [rpi-imager](https://www.raspberrypi.com/software/) installed.
+- A microSD card with at least 32GB of storage.
+- The latest release from the [setupimage releases page](https://github.com/pib-rocks/setupimage/releases).
 
-### Install on microSD
-- Download the latest release, e.g. https://github.com/pib-rocks/setupimage/releases/download/v0.1.0/pibOS-25.04.06-15.34.img.xz 
-- Install the local image using rpi-imager.
-- Boot the pi with this image.
-- Be patient, setting up docker takes time.
+### Installation
 
+1. **Download the Latest Release:**
+   - Example: [pibOS-25.04.06-15.34.img.xz](https://github.com/pib-rocks/setupimage/releases/download/v0.1.0/pibOS-25.04.06-15.34.img.xz)
 
-### Build locally (optionally)
+2. **Flash the Image:**
+   - Use `rpi-imager` to flash the downloaded image onto your microSD card.
 
-1. Clone the repository:
-  ```bash
-  git clone https://github.com/pib-rocks/setupimage.git
-  ```
+3. **Boot the Raspberry Pi:**
+   - Insert the microSD card into your Raspberry Pi and boot it up.
+   - Note: The initial setup, including Docker configuration, may take some time.
 
-2. Change directory
-  ```bash
-  cd setupimage/pibOS
-  ```
+### Building Locally 
+(Optional)
 
-3. Run build script
-  ```bash
-  sudo ./build_dist
-  ```
+If you prefer to build the image locally, follow these steps:
+
+1. **Clone the Repository:**
+   ```bash
+   git clone https://github.com/pib-rocks/setupimage.git
+   ```
+
+2. **Navigate to the Project Directory:**
+   ```bash
+   cd setupimage/pibOS
+   ```
+
+3. **Run the Build Script:**
+   ```bash
+   sudo ./build_dist
+   ```
+
+## Usage
+
+Once the image is flashed and the Raspberry Pi is booted, the `pib-backend` will complete its installation automatically. You can then proceed with configuring your pib.rocks robot as needed.
+
+## Contributing
+
+We welcome contributions! Please read our contributing guidelines before submitting pull requests.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## Contact
+
+For any questions or support, please open an issue or contact us through the provided channels.
