@@ -8,6 +8,9 @@ on:
       - 'feature/*'  # Trigger for branches containing 'feature' in the name
     tags:
       - 'v*.*.*'     # Trigger for version tags (e.g., v1.0.0)
+  schedule:
+    - cron: '0 0 * * 0'  # Trigger every Sunday at midnight UTC
+    - cron: '0 0 * * *'   # Trigger every day at midnight UTC
 
 jobs:
   build:
@@ -66,6 +69,34 @@ jobs:
       - name: Get current date
         id: date
         run: echo "date=$(date +'%y.%m.%d-%H.%M')" >> $GITHUB_OUTPUT
+
+      - name: Create Weekly Release
+        if: github.event.schedule == '0 0 * * 0'
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: weekly-${{ steps.date.outputs.date }}
+          name: Weekly Release ${{ steps.date.outputs.date }}
+          draft: false
+          prerelease: false
+          body: |
+            This is a weekly release from ${{ steps.date.outputs.date }}.
+          files: ${{ steps.get_arm64_info.outputs.image }}
+
+      - name: Create Daily Release
+        if: github.event.schedule == '0 0 * * *'
+        uses: softprops/action-gh-release@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: daily-${{ steps.date.outputs.date }}
+          name: Daily Release ${{ steps.date.outputs.date }}
+          draft: false
+          prerelease: false
+          body: |
+            This is a daily release from ${{ steps.date.outputs.date }}.
+          files: ${{ steps.get_arm64_info.outputs.image }}
 
       - name: Create Pre-Release
         if: contains(github.ref, 'release')
