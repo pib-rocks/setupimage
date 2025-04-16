@@ -10,12 +10,22 @@ on:
       - 'v*.*.*'     # Trigger for version tags (e.g., v1.0.0)
   schedule:
     - cron: '0 0 * * 0'  # Trigger every Sunday at midnight UTC
+      branches:
+        - main    # Specify the branch for the weekly build
     - cron: '30 23 * * *'   # Trigger every day at 23:30 UTC
+      branches:
+        - develop # Specify the branch for the daily build
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+
+      - name: Checkout the specified branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.schedule && github.event.schedule.branches[0] || github.ref }}
+
       - name: Updates the package directory and installs necessary dependencies.
         run: |
           sudo apt-get update
