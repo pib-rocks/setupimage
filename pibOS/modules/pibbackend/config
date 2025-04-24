@@ -4,4 +4,4 @@ export BASE_ARCH="arm64"
 # BASE_USER="pib"
 
 PIBBACKEND_PKGS="git curl vim screen ansible tree yamllint \
-                nmap net-tools build-essential cmake"
+                nmap net-tools build-essential cmake cgroupfs-mount"
