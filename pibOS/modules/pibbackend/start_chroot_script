@@ -38,7 +38,7 @@ wget https://raw.githubusercontent.com/pib-rocks/pib-backend/main/setup/setup-pi
 chown "${BASE_USER}": setup-pib.sh
 # Execute the setup script with debug output enabled, ignoring errors in QEMU changeroot
 su --login --command "bash -x setup-pib.sh" "${BASE_USER}" || true
-custompios_export setup-pib.log.first setup-pib.log
+custompios_export setup-pib.log.first /home/${BASE_USER}/setup-pib.log
 
 # Start docker manually https://linuxconfig.org/start-docker-daemon-on-linux
 # Start the Docker daemon manually in the background without iptables and bridge network support
@@ -51,8 +51,8 @@ cd /home/${BASE_USER}/app/pib-backend
 sed -i '/^networks:/,/^[a-z]/d' docker-compose.yaml
 # Remove the '- pib-network' line from the docker-compose.yaml file
 sed -i '/- pib-network/d' docker-compose.yaml
-# Replace 'networks:' with 'network_mode: "host"' in the docker-compose.yaml file
-sed -i 's/^\(\s*\)networks:/\1network_mode: "host"/' docker-compose.yaml
+# Replace 'networks:' with 'network_mode: host' in the docker-compose.yaml file
+sed -i 's/^\(\s*\)networks:/\1network_mode: host/' docker-compose.yaml
 echo *************** pib-backend git diff **************
 git diff docker-compose.yaml | tee -a /home/${BASE_USER}/setup-pib.log
 echo --------------- docker-compose.yaml -----------
@@ -70,7 +70,7 @@ sed -i '/^networks:/,/^[a-z]/d' docker-compose.yaml
 # Remove the '- pib-network' line from the docker-compose.yaml file
 sed -i '/- pib-network/d' docker-compose.yaml
 # Replace 'networks:' with 'network_mode: "host"' in the docker-compose.yaml file
-sed -i 's/^\(\s*\)networks:/\1network_mode: "host"/' docker-compose.yaml
+sed -i 's/^\(\s*\)networks:/\1network_mode: host/' docker-compose.yaml
 echo *************** cerebra git diff **************
 git diff docker-compose.yaml | tee -a /home/${BASE_USER}/setup-pib.log
 echo --------------- docker-compose.yaml -----------
@@ -93,7 +93,7 @@ unpack /filesystem/root /
 # Enable the doitpi_firstboot service to run at startup
 systemctl enable doitpi_firstboot.service
 # Remove the setup log file if it exists.
-if [ -f /home/${BASE_USER}/setup-pib.log ]
-then
-    rm /home/${BASE_USER}/setup-pib.log
-fi
+#if [ -f /home/${BASE_USER}/setup-pib.log ]
+#then
+#    rm /home/${BASE_USER}/setup-pib.log
+#fi

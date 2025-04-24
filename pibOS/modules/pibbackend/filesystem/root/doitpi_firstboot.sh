@@ -70,6 +70,10 @@ fi
 # Change the ownership of the setup-pib.sh script to the current user
 chown "${USER_NAME}": setup-pib.sh
 # Switch to the current user and execute the setup-pib.sh script with debug output enabled
+if [ -f /home/${BASE_USER}/setup-pib.log ]
+then
+    rm /home/${BASE_USER}/setup-pib.log
+fi
 su --login --command "bash -x setup-pib.sh" "${USER_NAME}"
 
 docker compose -f "$BACKEND_DIR/docker-compose.yaml" --profile all up -d || return 1
