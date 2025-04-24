@@ -54,7 +54,7 @@ sed -i '/- pib-network/d' docker-compose.yaml
 # Replace 'networks:' with 'network_mode: "host"' in the docker-compose.yaml file
 sed -i 's/^\(\s*\)networks:/\1network_mode: "host"/' docker-compose.yaml
 echo *************** pib-backend git diff **************
-git dif docker-compose.yaml | tee -a /home/${BASE_USER}/setup-pib.log
+git diff docker-compose.yaml | tee -a /home/${BASE_USER}/setup-pib.log
 echo --------------- docker-compose.yaml -----------
 cat docker-compose.yaml | tee -a /home/${BASE_USER}/setup-pib.log
 # Build all Docker images defined in the docker-compose.yaml file using the 'all' profile
@@ -72,7 +72,7 @@ sed -i '/- pib-network/d' docker-compose.yaml
 # Replace 'networks:' with 'network_mode: "host"' in the docker-compose.yaml file
 sed -i 's/^\(\s*\)networks:/\1network_mode: "host"/' docker-compose.yaml
 echo *************** cerebra git diff **************
-git dif docker-compose.yaml | tee -a /home/${BASE_USER}/setup-pib.log
+git diff docker-compose.yaml | tee -a /home/${BASE_USER}/setup-pib.log
 echo --------------- docker-compose.yaml -----------
 cat docker-compose.yaml | tee -a /home/${BASE_USER}/setup-pib.log
 # Build all Docker images defined in the docker-compose.yaml file
