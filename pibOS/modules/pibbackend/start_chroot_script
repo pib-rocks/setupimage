@@ -87,11 +87,11 @@ then
     rm /etc/sudoers.d/${BASE_USER}
 fi
 
-# Enable the doitpi_firstboot service to run at startup
-systemctl_if_exists enable doitpi_firstboot.service
-
 # Unpack the root filesystem at the end to ensure all modifications are applied
 unpack /filesystem/root /
+
+# Enable the doitpi_firstboot service to run at startup
+systemctl enable doitpi_firstboot.service
 # Remove the setup log file if it exists.
 if [ -f /home/${BASE_USER}/setup-pib.log ]
 then
