@@ -60,6 +60,7 @@ cat docker-compose.yaml | tee -a /home/${BASE_USER}/setup-pib.log
 # Build all Docker images defined in the docker-compose.yaml file using the 'all' profile
 docker compose --profile all build || true
 # Restore the original docker-compose.yaml file from the git repository
+git config --global --add safe.directory $PWD
 git restore docker-compose.yaml
 #Change back to the previous directory
 cd -
@@ -78,6 +79,7 @@ cat docker-compose.yaml | tee -a /home/${BASE_USER}/setup-pib.log
 # Build all Docker images defined in the docker-compose.yaml file
 docker compose build || true
 # Restore the original docker-compose.yaml file from the git repository
+git config --global --add safe.directory $PWD
 git restore docker-compose.yaml
 # Change back to the previous directory
 cd -
