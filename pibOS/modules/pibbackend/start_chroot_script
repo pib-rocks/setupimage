@@ -82,6 +82,8 @@ git restore docker-compose.yaml
 # Change back to the previous directory
 cd -
 
+kill $(pgrep -f "dockerd --iptables=false --bridge=none")
+
 if [ -f /etc/sudoers.d/${BASE_USER} ]
 then
     rm /etc/sudoers.d/${BASE_USER}
