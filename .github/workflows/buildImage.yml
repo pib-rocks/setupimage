@@ -37,6 +37,7 @@ jobs:
       - name: Build Docker images
         run: |
           cd pib-backend
+          echo "TRYB_URL_PREFIX=https://tryb.ai" > password.env
           docker buildx create --use
           docker compose --profile all build
       
