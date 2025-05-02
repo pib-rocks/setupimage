@@ -25,6 +25,12 @@ jobs:
         with:
           repository: 'pib-rocks/pib-backend'
           path: pib-backend
+
+      - name: Clones the pib-frontend repository into the path 'cerebra'.
+        uses: actions/checkout@v4
+        with:
+          repository: 'pib-rocks/cerebra'
+          path: cerebra
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
