@@ -42,12 +42,15 @@ jobs:
 
       - name: Build Docker images
         run: |
-          app/pib-backend/setup/setup-pib.sh || true
-          cd app/pib-backend
-          echo "TRYB_URL_PREFIX=https://tryb.ai" > password.env
+          export APP_DIR="${PWD}/app"
+          export BACKEND_DIR="$APP_DIR/pib-backend"
+          export FRONTEND_DIR="$APP_DIR/cerebra"
+          echo "TRYB_URL_PREFIX=https://tryb.ai" > "$BACKEND_DIR"/password.env
           docker buildx create --use
-          docker compose --profile all build
-      
+          docker buildx build --platform linux/arm64 -t pib-blockly-server:arm64 -f "$BACKEND_DIR/pib_blockly/pib_blockly_server/Dockerfile" "$BACKEND_DIR"
+          
+          docker buildx build --platform linux/arm64 -t ros-display:arm64 -f "$BACKEND_DIR/ros_packages/display/Dockerfile" "$BACKEND_DIR"
+
       - name: Save Docker images as artifacts
         run: |
           docker save -o pib-blockly-server.tar pib-blockly-server
