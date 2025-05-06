@@ -47,10 +47,53 @@ jobs:
           export FRONTEND_DIR="$APP_DIR/cerebra"
           echo "TRYB_URL_PREFIX=https://tryb.ai" > "$BACKEND_DIR"/password.env
           docker buildx create --use
-          docker buildx build --platform linux/arm64 -t pib-blockly-server:arm64 -f "$BACKEND_DIR/pib_blockly/pib_blockly_server/Dockerfile" "$BACKEND_DIR"
-          
-          docker buildx build --platform linux/arm64 -t ros-display:arm64 -f "$BACKEND_DIR/ros_packages/display/Dockerfile" "$BACKEND_DIR"
 
+          #docker buildx build --platform linux/arm64 \
+          #  -t pib-blockly-server:arm64 \
+          #  -f "$BACKEND_DIR/pib_blockly/pib_blockly_server/Dockerfile" \
+          #     ${BACKEND_DIR}/pib_blockly/pib_blockly_server
+
+          docker buildx build --platform linux/arm64 \
+            -t flask_api:arm64 \
+            -f "$BACKEND_DIR/pib_api/flask/Dockerfile" \
+               "$BACKEND_DIR"
+
+          docker buildx build --platform linux/arm64 -t \
+            tinkerforge-brickd:arm64 \
+            -f "$BACKEND_DIR/Dockerfile.brickd" \
+               "$BACKEND_DIR"
+
+          docker buildx build --platform linux/arm64 \
+            -t rosbridge-ws:arm64 \
+            -f "$BACKEND_DIR/rosbridge/Dockerfile" \
+            ${BACKEND_DIR}/ros_packages
+
+          docker buildx build --platform linux/arm64 \
+            -t rosbridge-camera:arm64 \
+            -f "$BACKEND_DIR/camera/Dockerfile" \
+               ${BACKEND_DIR}/ros_packages
+
+          docker buildx build --platform linux/arm64 \
+            -t rosbridge_motors:arm64 \
+            -f "$BACKEND_DIR/ros_packages/motor/Dockerfile" \
+               ${BACKEND_DIR}
+
+          docker buildx build --platform linux/arm64 \
+            -t ros_voice_assistant:arm64 \
+            -f "$BACKEND_DIR/ros_packages/voice_assistant/Dockerfile" \
+               ${BACKEND_DIR}
+
+          docker buildx build --platform linux/arm64 \
+            -t ros_programs:arm64 \
+            -f "$BACKEND_DIR/ros_packages/programs/Dockerfile" \
+               ${BACKEND_DIR}
+
+          docker buildx build --platform linux/arm64 \
+            -t ros-display:arm64 \
+            -f "$BACKEND_DIR/ros_packages/display/Dockerfile" \
+               ${BACKEND_DIR}
+
+          
       - name: Save Docker images as artifacts
         run: |
           docker save -o pib-blockly-server.tar pib-blockly-server
