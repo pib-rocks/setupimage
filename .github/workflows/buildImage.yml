@@ -55,18 +55,16 @@ jobs:
           sed -i '/image: .*/a\    platform: linux/arm64' docker-compose.yaml
           sed -i '19d' docker-compose.yaml
           touch password.env
-          docker compose --profile all pull
+          docker compose --profile all pull --quiet
           mkdir pibrocks
-          for image in $(docker image ls | grep pibrocks | cut -d ' ' -f 1)
-          do
-            docker save -o ${image}.tar $image
-          done
-          ls -lachi pibrocks/
+          #for image in $(docker image ls | grep pibrocks | cut -d ' ' -f 1)
+          #do
+          #  docker save -o ${image}.tar $image
+          docker save pibrocks/flask-api flask-api.tar
+          #done
 
       - name: Get Docker images
         run: |
-          ls pib-backend-docker
-          ls pib-backend-docker/pibrocks/
           mv pib-backend-docker/pibrocks repository/pibOS/modules/pibbackend/filesystem/home/pi/
 
       - name: Downloads the Raspberry Pi OS image (Raspbian) as the base image.
