@@ -46,7 +46,7 @@ jobs:
           cd pib-backend-docker
           wget https://raw.githubusercontent.com/snfeld/pib-backend/6f3886fea81c4f82dae94968378429e1ff50e471/docker-compose.yaml
           sed -i '/image: .*/a\    platform: linux/arm64' docker-compose.yaml
-          sed -i '19d' deine_datei.txt
+          sed -i '19d' docker-compose.yaml
           docker compose --profile all pull
           docker image ls | grep pibrocks
           
