@@ -68,7 +68,7 @@ jobs:
           #for image in $(docker image ls | grep pibrocks | cut -d ' ' -f 1)
           #do
           #  docker save -o ${image}.tar $image
-          docker save pibrocks/flask-api flask-api.tar
+          docker save flask-api.tar pibrocks/flask-api
           #done
 
       - name: Get Docker images
