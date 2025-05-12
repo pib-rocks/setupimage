@@ -34,27 +34,11 @@ jobs:
           do
             docker save -o ${image}.tar $image
           done
-          ls pibrocks/pib-blockly-server.tar.gz
-
-      #- name: Upload Docker images as artifacts
-      #  uses: actions/upload-artifact@v4
-      #  with:
-      #    name: docker-images
-      #    path: |
-      #      pib-blockly-server.tar
-      #      flask_api.tar
-      #      tinkerforge-brickd.tar
-      #      ros-camera.tar
-      #      ros_motors.tar
-      #      ros_voice_assistant.tar
-      #      ros_programs.tar
-      #      ros-display.tar
 
   build:
     runs-on: ubuntu-latest
     needs: build_docker
     steps:
-
       - name: Checkout the specified branch
         uses: actions/checkout@v4
         with:
@@ -81,6 +65,10 @@ jobs:
         run: |
           cd repository/pibOS
           ../../CustomPiOS/src/update-custompios-paths
+
+      - name: Get Docker images
+        run: |
+          mv pib-backend-docker/pibrocks repository/pibOS/modules/pibbackend/filesystem/home/pi/
 
       - name: Downloads the Raspberry Pi OS image (Raspbian) as the base image.
         run: |
