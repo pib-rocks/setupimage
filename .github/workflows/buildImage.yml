@@ -20,21 +20,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Get Docker images
-        run: |
-          mkdir pib-backend-docker
-          cd pib-backend-docker
-          wget https://raw.githubusercontent.com/snfeld/pib-backend/6f3886fea81c4f82dae94968378429e1ff50e471/docker-compose.yaml
-          sed -i '/image: .*/a\    platform: linux/arm64' docker-compose.yaml
-          sed -i '19d' docker-compose.yaml
-          touch password.env
-          docker compose --profile all pull
-          mkdir pibrocks
-          for image in $(docker image ls | grep pibrocks | cut -d ' ' -f 1)
-          do
-            docker save -o ${image}.tar $image
-          done
-
       - name: Checkout the specified branch
         uses: actions/checkout@v4
         with:
@@ -61,9 +46,27 @@ jobs:
         run: |
           cd repository/pibOS
           ../../CustomPiOS/src/update-custompios-paths
+      
+      - name: Get Docker images
+        run: |
+          mkdir pib-backend-docker
+          cd pib-backend-docker
+          wget https://raw.githubusercontent.com/snfeld/pib-backend/6f3886fea81c4f82dae94968378429e1ff50e471/docker-compose.yaml
+          sed -i '/image: .*/a\    platform: linux/arm64' docker-compose.yaml
+          sed -i '19d' docker-compose.yaml
+          touch password.env
+          docker compose --profile all pull
+          mkdir pibrocks
+          for image in $(docker image ls | grep pibrocks | cut -d ' ' -f 1)
+          do
+            docker save -o ${image}.tar $image
+          done
+          ls -lachi pibrocks/
 
       - name: Get Docker images
         run: |
+          ls pib-backend-docker
+          ls pib-backend-docker/pibrocks/
           mv pib-backend-docker/pibrocks repository/pibOS/modules/pibbackend/filesystem/home/pi/
 
       - name: Downloads the Raspberry Pi OS image (Raspbian) as the base image.
