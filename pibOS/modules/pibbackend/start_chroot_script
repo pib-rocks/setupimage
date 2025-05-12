@@ -48,7 +48,7 @@ dockerd --iptables=false --bridge=none &
 # Wait for 10 seconds to ensure Docker is fully up and running
 sleep 10
 cd pibrocks
-for i in *.tar
+for i in $(ls *.tar)
 do
     docker load ${i}
 done
