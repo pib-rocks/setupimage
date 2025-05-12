@@ -29,6 +29,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install --yes coreutils p7zip-full qemu-user-static pv time python3-git python3-yaml jq
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /usr/local/node_modules
+          sudo rm -rf /opt/hostedtoolcache/CodeQL
+          sudo rm -rf /opt/hostedtoolcache/go
+          sudo rm -rf /opt/hsotedtoolcache/Python /usr/local/.ghcup /usr/local/share/chromium
+          sudo docker system prune --force
+          sudo docker volume prune --force
+          df -h
 
       - name: Clones the CustomPiOS repository into the path 'CustomPiOS'.
         uses: actions/checkout@v4
