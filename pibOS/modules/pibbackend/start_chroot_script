@@ -45,46 +45,11 @@ custompios_export setup-pib.log.first /home/${BASE_USER}/setup-pib.log
 dockerd --iptables=false --bridge=none &
 # Wait for 10 seconds to ensure Docker is fully up and running
 sleep 10
-# Change directory to the pib-backend application directory
-cd /home/${BASE_USER}/app/pib-backend
-# Remove the 'networks' section from the docker-compose.yaml file
-sed -i '/^networks:/,/^[a-z]/d' docker-compose.yaml
-# Remove the '- pib-network' line from the docker-compose.yaml file
-sed -i '/- pib-network/d' docker-compose.yaml
-# Replace 'networks:' with 'network_mode: host' in the docker-compose.yaml file
-sed -i 's/^\(\s*\)networks:/\1network_mode: host/' docker-compose.yaml
-echo '*************** pib-backend git diff **************' | tee -a /home/${BASE_USER}/setup-pib.log
-git diff docker-compose.yaml | tee -a /home/${BASE_USER}/setup-pib.log
-echo '--------------- docker-compose.yaml -----------' | tee -a /home/${BASE_USER}/setup-pib.log
-cat docker-compose.yaml | tee -a /home/${BASE_USER}/setup-pib.log
-# Build all Docker images defined in the docker-compose.yaml file using the 'all' profile
-docker compose --profile all build || true
-# Restore the original docker-compose.yaml file from the git repository
-git config --global --add safe.directory $PWD
-git restore docker-compose.yaml
-git config --global --unset safe.directory
-#Change back to the previous directory
-cd -
-# Change directory to the cerebra application directory
-cd /home/${BASE_USER}/app/cerebra
-# Remove the 'networks' section from the docker-compose.yaml file
-sed -i '/^networks:/,/^[a-z]/d' docker-compose.yaml
-# Remove the '- pib-network' line from the docker-compose.yaml file
-sed -i '/- pib-network/d' docker-compose.yaml
-# Replace 'networks:' with 'network_mode: "host"' in the docker-compose.yaml file
-sed -i 's/^\(\s*\)networks:/\1network_mode: host/' docker-compose.yaml
-echo '*************** cerebra git diff **************' | tee -a /home/${BASE_USER}/setup-pib.log
-git diff docker-compose.yaml | tee -a /home/${BASE_USER}/setup-pib.log
-echo '--------------- docker-compose.yaml -----------' | tee -a /home/${BASE_USER}/setup-pib.log
-cat docker-compose.yaml | tee -a /home/${BASE_USER}/setup-pib.log
-# Build all Docker images defined in the docker-compose.yaml file
-docker compose build || true
-# Restore the original docker-compose.yaml file from the git repository
-git config --global --add safe.directory $PWD
-git restore docker-compose.yaml
-git config --global --unset safe.directory
-# Change back to the previous directory
-cd -
+cd pibrocks
+for i in *.tar
+do
+    docker load ${i}
+done
 
 kill $(pgrep -f "dockerd --iptables=false --bridge=none")
 
