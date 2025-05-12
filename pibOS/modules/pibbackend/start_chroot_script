@@ -19,6 +19,8 @@ unpack /filesystem/home/pi /home/"${BASE_USER}" "${BASE_USER}"
 unpack /filesystem/home/root /root root
 unpack /filesystem/boot /boot
 
+ls /home/"${BASE_USER}"/pibrocks/
+
 # Update the package list
 apt-get update
 
