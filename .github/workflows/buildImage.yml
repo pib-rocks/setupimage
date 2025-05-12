@@ -50,30 +50,30 @@ jobs:
           docker compose --profile all pull
           docker image ls | grep pibrocks
           
-      - name: Save Docker images as artifacts
-        run: |
-          docker save -o pib-blockly-server.tar pib-blockly-server
-          docker save -o flask_api.tar flask_api
-          docker save -o tinkerforge-brickd.tar tinkerforge-brickd
-          docker save -o ros-camera.tar ros-camera
-          docker save -o ros_motors.tar ros_motors
-          docker save -o ros_voice_assistant.tar ros_voice_assistant
-          docker save -o ros_programs.tar ros_programs
-          docker save -o ros-display.tar ros-display
+      #- name: Save Docker images as artifacts
+      #  run: |
+      #    docker save -o pib-blockly-server.tar pib-blockly-server
+      #    docker save -o flask_api.tar flask_api
+      #    docker save -o tinkerforge-brickd.tar tinkerforge-brickd
+      #    docker save -o ros-camera.tar ros-camera
+      #    docker save -o ros_motors.tar ros_motors
+      #    docker save -o ros_voice_assistant.tar ros_voice_assistant
+      #    docker save -o ros_programs.tar ros_programs
+      #    docker save -o ros-display.tar ros-display
 
-      - name: Upload Docker images as artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: docker-images
-          path: |
-            pib-blockly-server.tar
-            flask_api.tar
-            tinkerforge-brickd.tar
-            ros-camera.tar
-            ros_motors.tar
-            ros_voice_assistant.tar
-            ros_programs.tar
-            ros-display.tar
+      #- name: Upload Docker images as artifacts
+      #  uses: actions/upload-artifact@v4
+      #  with:
+      #    name: docker-images
+      #    path: |
+      #      pib-blockly-server.tar
+      #      flask_api.tar
+      #      tinkerforge-brickd.tar
+      #      ros-camera.tar
+      #      ros_motors.tar
+      #      ros_voice_assistant.tar
+      #      ros_programs.tar
+      #      ros-display.tar
 
   build:
     runs-on: ubuntu-latest
