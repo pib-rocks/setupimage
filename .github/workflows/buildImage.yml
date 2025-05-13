@@ -37,31 +37,29 @@ jobs:
           sudo docker system prune --force
           sudo docker volume prune --force
           sudo df -h
-          sudo du -hd 1 / 2>/dev/null || true
-          mkdir data
-          sudo mount /mnt data
+          # sudo du -hd 1 / 2>/dev/null || true
 
       - name: Clones the CustomPiOS repository into the path 'CustomPiOS'.
         uses: actions/checkout@v4
         with:
           repository: 'guysoft/CustomPiOS'
-          path: data/CustomPiOS
+          path: CustomPiOS
 
       - name: Clones the main project repository into the path 'repository' and loads all submodules.
         uses: actions/checkout@v4
         with:
-          path: data/repository
+          path: repository
           submodules: true
 
       - name: Updates paths in CustomPiOS based on the project repository.
         run: |
-          cd data/repository/pibOS
+          cd repository/pibOS
           ../../CustomPiOS/src/update-custompios-paths
       
       - name: Get Docker images
         run: |
-          mkdir data/pib-backend-docker
-          cd data/pib-backend-docker
+          mkdir pib-backend-docker
+          cd pib-backend-docker
           wget https://raw.githubusercontent.com/snfeld/pib-backend/6f3886fea81c4f82dae94968378429e1ff50e471/docker-compose.yaml
           sed -i '/image: .*/a\    platform: linux/arm64' docker-compose.yaml
           sed -i '19d' docker-compose.yaml
@@ -75,29 +73,29 @@ jobs:
           ls pibrocks/*.tar
           df -h
           du -hd 1 pibrocks
-          du -hd 1 / 2>/dev/null || true
+          # sudo du -hd 1 / 2>/dev/null || true
 
       - name: Get Docker images
         run: |
-          mv data/pib-backend-docker/pibrocks data/repository/pibOS/modules/pibbackend/filesystem/home/pi/
+          mv pib-backend-docker/pibrocks repository/pibOS/modules/pibbackend/filesystem/home/pi/
 
       - name: Downloads the Raspberry Pi OS image (Raspbian) as the base image.
         run: |
-          cd data/repository/pibOS/image
+          cd repository/pibOS/image
           wget --continue --quiet --trust-server-names 'https://downloads.raspberrypi.com/raspios_arm64/images/raspios_arm64-2024-11-19/2024-11-19-raspios-bookworm-arm64.img.xz'
 
       - name: Builds the custom pibOS image.
         run: |
           sudo modprobe loop
-          cd data/repository/pibOS
+          cd repository/pibOS
           sudo bash ./build_dist
 
       - name: Creates a compressed image of the built pibOS.
         id: get_arm64_info
         run: |
-          source data/repository/pibOS/config
+          source repository/pibOS/config
           IMAGE=pibOS-$(date +%y.%m.%d-%H.%M)
-          sudo mv data/repository/pibOS/workspace/*.img ${IMAGE}.img
+          sudo mv repository/pibOS/workspace/*.img ${IMAGE}.img
           pv --progress ${IMAGE}.img | sudo xz --extreme --threads=0 | sudo tee ${IMAGE}.img.xz >/dev/null
           echo "image=${IMAGE}.img.xz" >> $GITHUB_OUTPUT
 
