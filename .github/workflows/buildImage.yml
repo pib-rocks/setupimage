@@ -70,7 +70,7 @@ jobs:
           do
             docker save $image | gzip ${image}.tar.gz
           done
-          ls pibrocks/*.tar
+          ls pibrocks/*.tar.gz
           df -h
           du -hd 1 pibrocks
           # sudo du -hd 1 / 2>/dev/null || true
