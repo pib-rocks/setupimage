@@ -1,5 +1,7 @@
 #!/bin/bash
 #set -e
+# Workaround for docker image testing
+exit
 sleep 30 # Waiting for prober boot up
 
 # Variable for the current user's home path

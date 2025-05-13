@@ -58,14 +58,18 @@ jobs:
       
       - name: Get Docker images
         run: |
-          mkdir pib-backend-docker
+          mkdir -p pib-backend-docker/pibrocks
           cd pib-backend-docker
           wget https://raw.githubusercontent.com/snfeld/pib-backend/6f3886fea81c4f82dae94968378429e1ff50e471/docker-compose.yaml
           sed -i '/image: .*/a\    platform: linux/arm64' docker-compose.yaml
           sed -i '19d' docker-compose.yaml
           touch password.env
           docker compose --profile all pull --quiet
-          mkdir pibrocks
+          mv docker-compose.yaml pibrocks/docker-compose.yaml.pibbackend
+          wget https://raw.githubusercontent.com/pib-rocks/cerebra/refs/heads/main/docker-compose.yaml
+          sed -i '/angular-app:/a\        image: pibrocks/angular-app\n        platform: linux/arm64' docker-compose.yaml
+          docker compose pull
+          mv docker-compose.yaml pibrocks/docker-compose.yaml.cerebra
           for image in $(docker image ls | grep pibrocks | cut -d ' ' -f 1)
           do
             docker save $image | gzip > ${image}.tar.gz
@@ -73,7 +77,6 @@ jobs:
           ls pibrocks/*.tar.gz | true
           df -h
           du -hd 1 pibrocks
-          # sudo du -hd 1 / 2>/dev/null || true
 
       - name: Get Docker images
         run: |
