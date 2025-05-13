@@ -37,7 +37,7 @@ jobs:
           sudo docker system prune --force
           sudo docker volume prune --force
           df -h
-          du -hd 1 /
+          du -hd 1 / 2>/dev/null || true
 
       - name: Clones the CustomPiOS repository into the path 'CustomPiOS'.
         uses: actions/checkout@v4
@@ -73,7 +73,7 @@ jobs:
           ls pibrocks/*.tar
           df -h
           du -hd 1 pibrocks
-          du -hd 1 /
+          du -hd 1 / 2>/dev/null || true
 
       - name: Get Docker images
         run: |
