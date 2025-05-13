@@ -51,6 +51,7 @@ cd pibrocks
 for i in $(ls *.tar)
 do
     docker load ${i}
+    rm ${i}
 done
 
 kill $(pgrep -f "dockerd --iptables=false --bridge=none")
