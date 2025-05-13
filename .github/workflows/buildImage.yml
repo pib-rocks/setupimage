@@ -71,6 +71,9 @@ jobs:
             docker save -o ${image}.tar $image
           done
           ls pibrocks/*.tar
+          df -h
+          du -hd 1 pibrocks
+          du -hd 1 /
 
       - name: Get Docker images
         run: |
