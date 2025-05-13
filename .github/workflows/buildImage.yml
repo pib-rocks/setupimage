@@ -68,7 +68,7 @@ jobs:
           mkdir pibrocks
           for image in $(docker image ls | grep pibrocks | cut -d ' ' -f 1)
           do
-            docker save $image | gzip ${image}.tar.gz
+            docker save $image | gzip > ${image}.tar.gz
           done
           ls pibrocks/*.tar.gz | true
           df -h
