@@ -50,7 +50,7 @@ sleep 10
 cd pibrocks
 for i in $(ls *.tar)
 do
-    docker load ${i}
+    docker load --input ${i}
     rm ${i}
 done
 
