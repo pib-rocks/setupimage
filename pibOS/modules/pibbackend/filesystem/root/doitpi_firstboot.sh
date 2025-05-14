@@ -80,7 +80,7 @@ then
   cp "${USER_HOME}/pibrocks/docker-compose.yaml.pibbackend" "$BACKEND_DIR/docker-compose.yaml"
   mv "$FRONTEND_DIR/docker-compose.yaml" "$FRONTEND_DIR/docker-compose.yaml.bak"
   cp "${USER_HOME}/pibrocks/docker-compose.yaml.cerebra" "$FRONTEND_DIR/docker-compose.yaml"
-if
+fi
 su --login --command "bash -x setup-pib.sh" "${USER_NAME}"
 
 docker compose -f "$BACKEND_DIR/docker-compose.yaml" --profile all up -d || return 1
