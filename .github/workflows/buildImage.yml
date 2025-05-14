@@ -68,7 +68,7 @@ jobs:
           mv docker-compose.yaml pibrocks/docker-compose.yaml.pibbackend
           wget https://raw.githubusercontent.com/pib-rocks/cerebra/refs/heads/main/docker-compose.yaml
           sed -i '/angular-app:/a\        image: pibrocks/angular-app\n        platform: linux/arm64' docker-compose.yaml
-          docker compose pull
+          docker compose pull --quiet
           mv docker-compose.yaml pibrocks/docker-compose.yaml.cerebra
           for image in $(docker image ls | grep pibrocks | cut -d ' ' -f 1)
           do
@@ -99,8 +99,9 @@ jobs:
           source repository/pibOS/config
           IMAGE=pibOS-$(date +%y.%m.%d-%H.%M)
           sudo mv repository/pibOS/workspace/*.img ${IMAGE}.img
-          pv --progress ${IMAGE}.img | sudo xz --extreme --threads=0 | sudo tee ${IMAGE}.img.xz >/dev/null
-          echo "image=${IMAGE}.img.xz" >> $GITHUB_OUTPUT
+          # pv --progress ${IMAGE}.img | sudo xz --extreme --threads=0 | sudo tee ${IMAGE}.img.xz >/dev/null
+          # echo "image=${IMAGE}.img.xz" >> $GITHUB_OUTPUT
+          echo "image=${IMAGE}.img" >> $GITHUB_OUTPUT
 
       - name: Uploads the created pibOS image as an artifact.
         uses: actions/upload-artifact@v4

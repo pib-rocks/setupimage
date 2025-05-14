@@ -1,7 +1,5 @@
 #!/bin/bash
 #set -e
-# Workaround for docker image testing
-exit
 sleep 30 # Waiting for prober boot up
 
 # Variable for the current user's home path
@@ -76,6 +74,13 @@ if [ -f /home/${BASE_USER}/setup-pib.log ]
 then
     rm /home/${BASE_USER}/setup-pib.log
 fi
+if [ -d "${USER_HOME}/pibrocks/" ]
+then
+  mv "$BACKEND_DIR/docker-compose.yaml" "$BACKEND_DIR/docker-compose.yaml.bak"
+  cp "${USER_HOME}/pibrocks/docker-compose.yaml.pibbackend" "$BACKEND_DIR/docker-compose.yaml"
+  mv "$FRONTEND_DIR/docker-compose.yaml" "$FRONTEND_DIR/docker-compose.yaml.bak"
+  cp "${USER_HOME}/pibrocks/docker-compose.yaml.cerebra" "$FRONTEND_DIR/docker-compose.yaml"
+if
 su --login --command "bash -x setup-pib.sh" "${USER_NAME}"
 
 docker compose -f "$BACKEND_DIR/docker-compose.yaml" --profile all up -d || return 1

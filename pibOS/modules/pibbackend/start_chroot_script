@@ -47,7 +47,7 @@ custompios_export setup-pib.log.first /home/${BASE_USER}/setup-pib.log
 dockerd --iptables=false --bridge=none &
 # Wait for 10 seconds to ensure Docker is fully up and running
 sleep 10
-cd pibrocks
+cd "/home/${BASE_USER}/pibrocks"
 for i in $(ls *.tar.gz)
 do
     docker load < ${i}
